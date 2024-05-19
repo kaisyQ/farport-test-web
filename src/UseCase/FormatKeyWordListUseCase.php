@@ -2,11 +2,11 @@
 
 namespace App\UseCase;
 
-use checkArrayDiffsTrait;
+use App\Utills\CheckArrayDiffsTrait;
 
 final class FormatKeyWordListUseCase {
 
-    use checkArrayDiffsTrait;
+    use CheckArrayDiffsTrait;
 
     /**
      * @param string[] $words

@@ -23,9 +23,8 @@ final class KeyPhraseController extends AbstractController {
 
         if($words) {
             $result = $this->generateKeyPhrasesUseCase->execute($words);
-            return $this->json($result);
         }
 
-        return $this->render('base.html.twig');
+        return $this->render('/key-phrase/index.html.twig', ['keyPrases' => $result ?? []]);
     }
 }
