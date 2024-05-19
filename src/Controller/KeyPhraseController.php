@@ -21,8 +21,8 @@ final class KeyPhraseController extends AbstractController {
     public function getPage(#[MapQueryParameter('key_words')] ?string $words): Response
     {
 
-        if($words) {
-            $result = $this->generateKeyPhrasesUseCase->execute($words);
+        if($words !== null) {
+            $result = $this->generateKeyPhrasesUseCase->execute(trim($words));
         }
 
         return $this->render('/key-phrase/index.html.twig', ['keyPrases' => $result ?? []]);

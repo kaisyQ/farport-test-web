@@ -6,11 +6,11 @@ namespace App\UseCase;
 final class GenerateKeyPhrasesUseCase {
 
 
-
     public function __construct(
         private readonly FormatKeyWordListUseCase $formatKeyWordListUseCase,
         private readonly GeneratePermutationsUseCase $generatePermutationsUseCase
     ) {}
+
 
     public function execute(string $keyWords): array {
         $rows = explode("\n", $keyWords);
