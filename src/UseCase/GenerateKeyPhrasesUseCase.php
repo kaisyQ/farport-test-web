@@ -13,18 +13,34 @@ final class GenerateKeyPhrasesUseCase {
 
 
     public function execute(string $keyWords): array {
-        $rows = explode("\n", $keyWords);
+    
 
-        $rows = array_map(
-            /**
-             * @return string[]
-             */
-            fn (string $row): array => explode(', ', $row), 
-        $rows);
+        $keyWords = str_replace(['.', '?', '&', '~', '<', '>', ')', '(', ')', '*', '/', "\""], ' ', $keyWords);
+
+        $result = [];
         
-        $resultWords = [];
+        $keyWordsArray = explode(',', $keyWords);
+
+        foreach ($keyWordsArray as $t) {
+            foreach (explode(' ', $t) as $t1) {
+                
+
+                if($t1 === '') continue;
+
+                if(in_array($t1[0], ['!', '-', '+']) && !in_array($t1[1], ['!', '-', '+'])) {
+                    $result[] = $t1[0] . str_replace(['!', '-', '+'], ' ', substr($t1, 1, strlen($t1)));
+                } else {
+                    $result[] = str_replace(['!', '-', '+'], ' ', $t1);
+                }
+            }
+        }
+
+
         
+        $rows = explode("\n", implode(',', $result));
+
         foreach ($rows as $row) {
+            
             $resultWords[] = $this->formatKeyWordListUseCase->execute($row);
         }
         
@@ -36,7 +52,7 @@ final class GenerateKeyPhrasesUseCase {
 
 
     private function generateFormattedPermutationList(array $permutations) {
-        
+
         foreach ($permutations as $perm) {
             $permValue = explode(' ', implode(' ', $perm));
         
@@ -45,7 +61,7 @@ final class GenerateKeyPhrasesUseCase {
             $plusWords = [];
         
             foreach ($permValue as $permValueDatum) {
-                if ($permValueDatum[0] === '-') {
+                if (strlen($permValueDatum) > 0 && $permValueDatum[0] === '-') {
                     $minusWords[] = $permValueDatum;
                 } else {
                     $plusWords[] = $permValueDatum;
