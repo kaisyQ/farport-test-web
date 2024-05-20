@@ -1,1 +1,1 @@
-{"version":1,"defects":[],"times":{"GeneratePermutationsUseCaseTest::testExecute#data set":0.004}}
+{"version":1,"defects":[],"times":{"GeneratePermutationsUseCaseTest::testExecute#data set":0.004,"GeneratePermutationsUseCaseTest::testExecute#Data set":0.045}}

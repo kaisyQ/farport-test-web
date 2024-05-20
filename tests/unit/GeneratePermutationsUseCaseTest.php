@@ -12,14 +12,10 @@ final class GeneratePermutationsUseCaseTest extends TestCase {
     public static function executeDataProvider(): array {
 
         return [
-            'data set' => [
+            'Data set' => [
                 [
-                    [
-                    'string_1','string_2',
-                    ],
-                    [
-                        'string_3',
-                    ]
+                    ['a','b',],
+                    ['c',]
                 ]
             ]
         ];
@@ -31,8 +27,8 @@ final class GeneratePermutationsUseCaseTest extends TestCase {
         $useCase = new GeneratePermutationsUseCase();
         
         $expected = [
-            ['string_1', 'string_3'],
-            ['string_2', 'string_3'],
+            ['a', 'c'],
+            ['b', 'c'],
         ];
 
         $this->assertEquals($expected, $useCase->execute($data));
