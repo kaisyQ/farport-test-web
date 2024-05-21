@@ -9,64 +9,72 @@ final class FormatKeyWordListUseCase {
     use CheckArrayDiffsTrait;
 
     /**
-     * @param string $words
+     * @param string[] $words
      */
-    public function execute(string $words): array {
+    public function execute(array $words): array {
 
-        dd($words);
+        $words = explode(',',$words[0]);
+
         $result = [];
         $sets = [];
         $wordSets = [];
 
-        foreach(explode(',', $words) as $wordKey => $word) {
-            
+        foreach($words as $wordKey => $word) {
+
+
+            if($words === '') continue;
+
+
+            $wordValues = array_filter(explode(' ', $word), fn($value) => $value !== '');
+
+
             if (count($sets) === 0) {
-                $sets[] = $word;
+                $sets[] = $wordValues;
                 $wordSets[$wordKey] = count($sets) - 1;
                 continue;
             } 
 
             $setFound = false;
 
+
             foreach($sets as $key => &$set) {
 
-                $setsDiffs = [];
+                $setDiff = [];
 
-                if (1 > count($set)) {
-                    $setsDiffs = array_diff_assoc([$word], $set);
+                if (count($wordValues) > count($set)) {
+                    $setDiff = array_diff($wordValues, $set);
                 } else {
-                    $setsDiffs = array_diff_assoc($set, [$word]);
+                    $setDiff = array_diff($set, $wordValues);
                 }
-
-
-                $contains = $this->checkArrayDiffs([$word], $set);
+                $contains = $this->checkArrayDiffs($wordValues, $set);
 
                 if ($contains) {
                     $wordSets[$wordKey] = $key;
-                    $set += $setsDiffs;
+                    $set += $setDiff;
                     $setFound = true;
                 }
             }
 
             if (!$setFound) {
-                $sets[] = $word;
+                $sets[] = $wordValues;
                 $wordSets[$wordKey] = count($sets) - 1;
             }
 
         }
-
-        dd($sets);
-
-        foreach (explode(',', $words) as $key => $word) {
-
-            // $minusWords = array_map(
-                // fn (string $word): string => " -{$word}", 
-                // array_diff_assoc($sets[$wordSets[$key]], [$word])
-            // );
-
-            // $result[] = $word . implode("", $minusWords); 
-        }
         
+
+        foreach ($words as $key => $word) {
+
+            $wordValues = explode(' ', $word);
+
+            $minusWords = array_map(fn(string $word): string => " -{$word}", array_diff($sets[$wordSets[$key]], $wordValues));
+
+            $wordValues = array_map(fn(string $value) => $value !== '' && strlen($value) <= 2 ? "+{$value}" : $value, $wordValues);
+
+            $result[] = implode(' ', $wordValues) . implode("", $minusWords); 
+
+        }
+
         return $result;
     }
 

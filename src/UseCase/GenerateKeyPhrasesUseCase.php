@@ -17,33 +17,34 @@ final class GenerateKeyPhrasesUseCase {
 
         $keyWords = str_replace(['.', '?', '&', '~', '<', '>', ')', '(', ')', '*', '/', "\""], ' ', $keyWords);
 
-        $result = [];
-        
-        $keyWordsArray = explode(',', $keyWords);
+        $rows = explode("\n", $keyWords);
 
-        foreach ($keyWordsArray as $t) {
-            foreach (explode(' ', $t) as $t1) {
-                
-
-                if($t1 === '') continue;
-
-                if(in_array($t1[0], ['!', '-', '+']) && !in_array($t1[1], ['!', '-', '+'])) {
-                    $result[] = $t1[0] . str_replace(['!', '-', '+'], ' ', substr($t1, 1, strlen($t1)));
-                } else {
-                    $result[] = str_replace(['!', '-', '+'], ' ', $t1);
-                }
-            }
-        }
-
-
-        
-        $rows = explode("\n", implode(',', $result));
-
-        foreach ($rows as $row) {
+        $rows = array_map(
+        function (string $row): string {
             
-            $resultWords[] = $this->formatKeyWordListUseCase->execute($row);
-        }
+            $result = [];
+
+            foreach (explode(',', $row) as $rowElement) {
+                
+                if($rowElement === '') continue;
+
+                if(in_array($rowElement[0], ['!', '-', '+']) && !in_array($rowElement[1], ['!', '-', '+'])) {
+                    $result[] = $rowElement[0] . str_replace(['!', '-', '+'], ' ', substr($rowElement, 1, strlen($rowElement)));
+                } else {
+                    $result[] = str_replace(['!', '-', '+'], ' ', $rowElement);
+                } 
+            }
+
+            return implode(',', $result) . "\n";
+        }, 
+
+        $rows);
+
+        $resultWords = []; 
         
+        foreach ($rows as $row) {
+            $resultWords[] = $this->formatKeyWordListUseCase->execute(explode("\n", $row));
+        }   
         
         $perms = $this->generatePermutationsUseCase->execute($resultWords);
         
