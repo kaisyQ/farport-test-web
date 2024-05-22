@@ -27,8 +27,8 @@ final class GeneratePermutationsUseCaseTest extends TestCase {
         $useCase = new GeneratePermutationsUseCase();
         
         $expected = [
-            ['+a', '+c'],
-            ['+b', '+c'],
+            ['a', 'c'],
+            ['b', 'c'],
         ];
 
         $this->assertEquals($expected, $useCase->execute($data));

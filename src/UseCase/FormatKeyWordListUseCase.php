@@ -13,6 +13,7 @@ final class FormatKeyWordListUseCase {
      */
     public function execute(array $words): array {
 
+        var_dump($words);
         $words = $this->filterInputRow($words);;
 
         $result = [];
@@ -71,7 +72,6 @@ final class FormatKeyWordListUseCase {
             $result[] = implode(' ', $wordValues) . implode("", $minusWords); 
 
         }
-
 
         return $result;
     }

@@ -9,10 +9,12 @@ final class FormatKeyWordListUseCaseTest extends TestCase {
 
 
     #[TestDox('testing format key words list')]
-    private static function executeDataProvider(): array {
+    public static function executeDataProvider(): array {
         return [
             'Key words' => [
-                ['Nissan', 'Nissan Babun-450x'] 
+                [
+                    'Nissan, Nissan Babun 450x'
+                ] 
             ]
         ];
     }
@@ -27,6 +29,6 @@ final class FormatKeyWordListUseCaseTest extends TestCase {
 
         $result = $useCase->execute($data);
 
-        $this->assertEquals(['Nissan -Babun-450x', 'Nissan Babun-450x'], $result);
+        $this->assertEquals(['Nissan -Babun -450x', 'Nissan Babun 450x'], $result);
     }
 }
