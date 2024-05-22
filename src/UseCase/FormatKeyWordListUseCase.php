@@ -13,7 +13,7 @@ final class FormatKeyWordListUseCase {
      */
     public function execute(array $words): array {
 
-        $words = explode(',',$words[0]);
+        $words = $this->filterInputRow($words);;
 
         $result = [];
         $sets = [];
@@ -21,12 +21,7 @@ final class FormatKeyWordListUseCase {
 
         foreach($words as $wordKey => $word) {
 
-
-            if($words === '') continue;
-
-
-            $wordValues = array_filter(explode(' ', $word), fn($value) => $value !== '');
-
+            $wordValues = explode(' ', $word);
 
             if (count($sets) === 0) {
                 $sets[] = $wordValues;
@@ -39,6 +34,10 @@ final class FormatKeyWordListUseCase {
 
             foreach($sets as $key => &$set) {
 
+                $contains = $this->checkArrayDiffs($wordValues, $set);
+
+                if (!$contains) continue;
+
                 $setDiff = [];
 
                 if (count($wordValues) > count($set)) {
@@ -46,13 +45,11 @@ final class FormatKeyWordListUseCase {
                 } else {
                     $setDiff = array_diff($set, $wordValues);
                 }
-                $contains = $this->checkArrayDiffs($wordValues, $set);
 
-                if ($contains) {
-                    $wordSets[$wordKey] = $key;
-                    $set += $setDiff;
-                    $setFound = true;
-                }
+
+                $wordSets[$wordKey] = $key;
+                $set += $setDiff;
+                $setFound = true;
             }
 
             if (!$setFound) {
@@ -61,7 +58,7 @@ final class FormatKeyWordListUseCase {
             }
 
         }
-        
+
 
         foreach ($words as $key => $word) {
 
@@ -69,14 +66,37 @@ final class FormatKeyWordListUseCase {
 
             $minusWords = array_map(fn(string $word): string => " -{$word}", array_diff($sets[$wordSets[$key]], $wordValues));
 
-            $wordValues = array_map(fn(string $value) => $value !== '' && strlen($value) <= 2 ? "+{$value}" : $value, $wordValues);
+            $wordValues = array_map(fn(string $value) => trim($value) !== '' && strlen($value) < 2 ? "+{$value}" : $value, $wordValues);
 
             $result[] = implode(' ', $wordValues) . implode("", $minusWords); 
 
         }
 
+
         return $result;
     }
 
 
+    /**
+     * @param string[] $words
+     */
+
+    private function filterInputRow(array $words) {
+        
+        $words = explode(',', $words[0]);
+
+        $result = [];
+        
+        foreach($words as $word) {
+
+            $wordValues = array_filter(explode(' ', $word), fn($value) => trim($value) !== '');
+
+            if (count($wordValues) === 0) continue;
+
+            $result[] = implode(' ', $wordValues);
+
+        }
+
+        return $result;
+    }
 }

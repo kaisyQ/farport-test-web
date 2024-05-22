@@ -13,59 +13,64 @@ final class GenerateKeyPhrasesUseCase {
 
 
     public function execute(string $keyWords): array {
-    
-
-        $keyWords = str_replace(['.', '?', '&', '~', '<', '>', ')', '(', ')', '*', '/', "\""], ' ', $keyWords);
-
-        $rows = explode("\n", $keyWords);
-
-        $rows = array_map(
-        function (string $row): string {
-            
-            $result = [];
-
-            foreach (explode(',', $row) as $rowElement) {
-                
-                if($rowElement === '') continue;
-
-                if(in_array($rowElement[0], ['!', '-', '+']) && !in_array($rowElement[1], ['!', '-', '+'])) {
-                    $result[] = $rowElement[0] . str_replace(['!', '-', '+'], ' ', substr($rowElement, 1, strlen($rowElement)));
-                } else {
-                    $result[] = str_replace(['!', '-', '+'], ' ', $rowElement);
-                } 
-            }
-
-            return implode(',', $result) . "\n";
-        }, 
-
-        $rows);
+        
+        $filteredKeyWords = $this->filterInputKeyWordString($keyWords);
 
         $resultWords = []; 
         
-        foreach ($rows as $row) {
+        foreach ($filteredKeyWords as $row) {
             $resultWords[] = $this->formatKeyWordListUseCase->execute(explode("\n", $row));
         }   
-        
+
         $perms = $this->generatePermutationsUseCase->execute($resultWords);
         
         return $this->generateFormattedPermutationList($perms);
     }  
 
 
+    private function filterInputKeyWordString(string $keyWords): array {
+        $keyWords = str_replace(['.', '?', '&', '~', '<', '>', ')', '(', ')', '*', '/', "\\", "@", "#"], ' ', $keyWords);
+
+        $rows = explode("\n", $keyWords);
+
+        $rows = array_map(
+            function (string $row): string {
+            
+                $result = [];
+
+                foreach (explode(',', $row) as $rowElement) {
+                    
+                    if($rowElement === '' || in_array($rowElement, ['!', '-', '+'])) continue;
+
+                    if(in_array($rowElement[0], ['!', '-', '+']) && !in_array($rowElement[1], ['!', '-', '+'])) {
+                        $result[] = $rowElement[0] . str_replace(['!', '-', '+'], ' ', substr($rowElement, 1, strlen($rowElement)));
+                    } else {
+                        $result[] = str_replace(['!', '-', '+'], ' ', $rowElement);
+                    } 
+                }
+
+                return implode(',', $result) . "\n";
+            }, 
+            $rows
+        );
+
+        return $rows;
+    }
+
     private function generateFormattedPermutationList(array $permutations) {
 
-        foreach ($permutations as $perm) {
-            $permValue = explode(' ', implode(' ', $perm));
+        foreach ($permutations as $permutation) {
+            $permutationValue = explode(' ', implode(' ', $permutation));
         
         
             $minusWords = [];
             $plusWords = [];
         
-            foreach ($permValue as $permValueDatum) {
-                if (strlen($permValueDatum) > 0 && $permValueDatum[0] === '-') {
-                    $minusWords[] = $permValueDatum;
+            foreach ($permutationValue as $permutationValueDatum) {
+                if (strlen($permutationValueDatum) > 0 && $permutationValueDatum[0] === '-') {
+                    $minusWords[] = $permutationValueDatum;
                 } else {
-                    $plusWords[] = $permValueDatum;
+                    $plusWords[] = $permutationValueDatum;
                 }
             }
             $str = implode(' ', array_merge($plusWords,$minusWords));
