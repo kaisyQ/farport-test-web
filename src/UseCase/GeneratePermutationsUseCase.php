@@ -3,8 +3,9 @@
 
 namespace App\UseCase;
 
+use App\Abstraction\GeneratePermutationsUseCaseInterface;
 
-final class GeneratePermutationsUseCase {
+final class GeneratePermutationsUseCase implements GeneratePermutationsUseCaseInterface {
 
     public function execute(array $arraysOfWords): array {
         $result = $this->makePermutations($arraysOfWords);

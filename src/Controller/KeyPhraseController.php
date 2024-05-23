@@ -2,17 +2,17 @@
 
 namespace App\Controller;
 
-use App\UseCase\GenerateKeyPhrasesUseCase;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 
-
+use App\Abstraction\GenerateKeyPhrasesUseCaseInterface;
 #[Route(path: '/')]
 final class KeyPhraseController extends AbstractController {
     
-    public function __construct(private readonly GenerateKeyPhrasesUseCase $generateKeyPhrasesUseCase)
+    public function __construct(private readonly GenerateKeyPhrasesUseCaseInterface $generateKeyPhrasesUseCase)
     {   
     }
 

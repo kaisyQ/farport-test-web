@@ -2,15 +2,17 @@
 
 namespace App\UseCase;
 
+use App\Abstraction\FormatKeyWordListUseCaseInterface;
+use App\Abstraction\GenerateKeyPhrasesUseCaseInterface;
+use App\Abstraction\GeneratePermutationsUseCaseInterface;
 
-final class GenerateKeyPhrasesUseCase {
+final class GenerateKeyPhrasesUseCase implements GenerateKeyPhrasesUseCaseInterface {
 
 
     public function __construct(
-        private readonly FormatKeyWordListUseCase $formatKeyWordListUseCase,
-        private readonly GeneratePermutationsUseCase $generatePermutationsUseCase
+        private readonly FormatKeyWordListUseCaseInterface $formatKeyWordListUseCase,
+        private readonly GeneratePermutationsUseCaseInterface $generatePermutationsUseCase
     ) {}
-
 
     public function execute(string $keyWords): array {
         

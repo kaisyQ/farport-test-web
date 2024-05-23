@@ -2,9 +2,10 @@
 
 namespace App\UseCase;
 
-use App\Utills\CheckArrayDiffsTrait;
 
-final class FormatKeyWordListUseCase {
+use App\Utills\CheckArrayDiffsTrait;
+use App\Abstraction\FormatKeyWordListUseCaseInterface;
+final class FormatKeyWordListUseCase implements FormatKeyWordListUseCaseInterface {
 
     use CheckArrayDiffsTrait;
 
@@ -13,7 +14,6 @@ final class FormatKeyWordListUseCase {
      */
     public function execute(array $words): array {
 
-        var_dump($words);
         $words = $this->filterInputRow($words);;
 
         $result = [];

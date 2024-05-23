@@ -20,5 +20,14 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    App\UseCase\FormatKeyWordListUseCase: ~
+    App\UseCase\GenerateKeyPhrasesUseCase: ~
+    App\UseCase\GeneratePermutationsUseCase: ~
+    
+    App\Absraction\FormatKeyWordListUseCaseInterface: '@App\UseCase\FormatKeyWordListUseCase'
+    App\Absraction\GenerateKeyPhrasesUseCaseInterface: '@App\UseCase\GenerateKeyPhrasesUseCase'
+    App\Absraction\GeneratePermutationsUseCaseInterface: '@App\UseCase\GeneratePermutationsUseCase'
+
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
