@@ -29,6 +29,9 @@ final class FormatKeyWordListUseCaseTest extends TestCase {
 
         $result = $useCase->execute($data);
 
+        $this->assertNotEmpty($result);
+        $this->assertIsArray($result);
         $this->assertEquals(['Nissan -Babun -450x', 'Nissan Babun 450x'], $result);
     }
+    
 }

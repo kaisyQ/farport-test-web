@@ -31,6 +31,10 @@ final class GeneratePermutationsUseCaseTest extends TestCase {
             ['b', 'c'],
         ];
 
+        $result = $useCase->execute($data);
+
+        $this->assertNotEmpty($result);
+        $this->assertIsArray($result);
         $this->assertEquals($expected, $useCase->execute($data));
     }
 }

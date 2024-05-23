@@ -41,15 +41,14 @@ final class FormatKeyWordListUseCase implements FormatKeyWordListUseCaseInterfac
 
                 $setDiff = [];
 
-                if (count($wordValues) > count($set)) {
+                if (count($wordValues) >= count($set)) {
                     $setDiff = array_diff($wordValues, $set);
                 } else {
                     $setDiff = array_diff($set, $wordValues);
                 }
-
-
+                
                 $wordSets[$wordKey] = $key;
-                $set += $setDiff;
+                $set = [...$set, ...$setDiff];
                 $setFound = true;
             }
 
@@ -60,15 +59,14 @@ final class FormatKeyWordListUseCase implements FormatKeyWordListUseCaseInterfac
 
         }
 
-
         foreach ($words as $key => $word) {
 
             $wordValues = explode(' ', $word);
 
             $minusWords = array_map(fn(string $word): string => " -{$word}", array_diff($sets[$wordSets[$key]], $wordValues));
 
-            $wordValues = array_map(fn(string $value) => trim($value) !== '' && strlen($value) < 2 ? "+{$value}" : $value, $wordValues);
-
+            $wordValues = array_map(fn(string $value) => trim($value) !== '' && strlen(trim($value)) < 2 ? "+{$value}" : $value, $wordValues);
+            
             $result[] = implode(' ', $wordValues) . implode("", $minusWords); 
 
         }
